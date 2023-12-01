@@ -66,6 +66,16 @@ class ArcticDataset(Dataset):
         # thus, results for evaluation is in the undistorted space (non-curved)
         # dist parameters can be used for rendering in visualization
 
+        #trans_r = torch.tensor(data_params["trans_r"][vidx].copy()[None, None, ...])
+        #trans_l = torch.tensor(data_params["trans_l"][vidx].copy()[None, None, ...])
+        world2ego = torch.tensor(data_params['world2ego'][vidx].copy()[None, ...])
+
+        #ego_trans_r = tf.transform_points_batch(world2ego, trans_r)
+        #ego_trans_l = tf.transform_points_batch(world2ego, trans_l)
+
+        #ego_dist_trans_r = tf.distort_pts3d_all(ego_trans_r, torch.tensor(dist))
+        #ego_dist_trans_l = tf.distort_pts3d_all(ego_trans_l, torch.tensor(dist))
+
         # objects
         bbox2d = pad_jts2d(data_2d["bbox3d"][vidx, view_idx].copy())
         bbox3d = data_cam["bbox3d"][vidx, view_idx].copy()
@@ -126,6 +136,7 @@ class ArcticDataset(Dataset):
 
         center = [bbox[0], bbox[1]]
         scale = bbox[2]
+        self.aug_data = False
 
         # augment parameters
         augm_dict = data_utils.augm_params(
@@ -188,6 +199,8 @@ class ArcticDataset(Dataset):
         pose_r = np.concatenate((rot_r, pose_r), axis=0)
         pose_l = np.concatenate((rot_l, pose_l), axis=0)
 
+        targets["world2ego"] = world2ego
+
         # hands
         targets["mano.pose.r"] = torch.from_numpy(
             data_utils.pose_processing(pose_r, augm_dict)
@@ -195,6 +208,8 @@ class ArcticDataset(Dataset):
         targets["mano.pose.l"] = torch.from_numpy(
             data_utils.pose_processing(pose_l, augm_dict)
         ).float()
+        #targets["mano.transl.r"] = ego_trans_r.squeeze().float()
+        #targets["mano.transl.l"] = ego_trans_l.squeeze().float()
         targets["mano.beta.r"] = torch.from_numpy(betas_r).float()
         targets["mano.beta.l"] = torch.from_numpy(betas_l).float()
         targets["mano.j2d.norm.r"] = torch.from_numpy(joints2d_r[:, :2]).float()
@@ -336,6 +351,7 @@ class ArcticDataset(Dataset):
         self.egocam_k = None
 
     def __init__(self, args, split, seq=None):
+        args.img_res = args.img_res[0]
         self._load_data(args, split, seq)
         self._process_imgnames(seq, split)
         logger.info(
@@ -385,9 +401,7 @@ class ArcticDataset(Dataset):
         if load_rgb:
             if speedup:
                 imgname = imgname.replace("/images/", "/cropped_images/")
-            imgname = imgname.replace(
-                "/arctic_data/", "/data/arctic_data/data/"
-            ).replace("/data/data/", "/data/")
+            imgname = imgname.replace("/arctic_data/", "/data/arctic_data/data/")
             cv_img, img_status = read_img(imgname, (2800, 2000, 3))
         else:
             norm_img = None

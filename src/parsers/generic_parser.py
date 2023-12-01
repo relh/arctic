@@ -22,6 +22,7 @@ def add_generic_args(parser):
         "-f",
         "--fast",
         dest="fast_dev_run",
+        default=False,
         help="single batch for development",
         action="store_true",
     )
@@ -45,7 +46,7 @@ def add_generic_args(parser):
         default=None,
         help="split for extraction",
     )
-    parser.add_argument("--setup", type=str, default=None)
+    parser.add_argument("--setup", type=str, default='p2')
 
     parser.add_argument("--log_every", type=int, default=None, help="log every k steps")
     parser.add_argument(

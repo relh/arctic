@@ -2,7 +2,7 @@ comet_ml==3.32.8
 jpeg4py==0.1.4
 loguru
 matplotlib
-numpy>=1.16.5,<1.23.0
+numpy
 opencv_python
 chardet
 Pillow
