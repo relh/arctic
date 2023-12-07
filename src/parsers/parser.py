@@ -6,12 +6,12 @@ from common.args_utils import set_default_params
 from src.parsers.generic_parser import add_generic_args
 
 
-def construct_args():
+def construct_args(img_res=224, fast_dev_run=True):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--method",
         type=str,
-        default=None,
+        default="arctic_sf",
         choices=[None, "arctic_sf", "arctic_lstm", "field_sf", "field_lstm"],
     )
     parser.add_argument("--exp_key", type=str, default=None)
@@ -31,15 +31,17 @@ def construct_args():
     elif args.method in ["field_lstm"]:
         import src.parsers.configs.field_lstm as config
     else:
-        assert False
+        pass
+        #assert False
 
     default_args = (
         config.DEFAULT_ARGS_EGO if args.setup in ["p2"] else config.DEFAULT_ARGS_ALLO
     )
     args = set_default_params(args, default_args)
 
+    args.fast_dev_run = fast_dev_run
     args.focal_length = 1000.0
-    args.img_res = 224
+    args.img_res = img_res
     args.rot_factor = 30.0
     args.noise_factor = 0.4
     args.scale_factor = 0.25
