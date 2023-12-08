@@ -49,20 +49,25 @@ class SeqArcticDataset(Dataset):
         seq_name = seq_p.split("/")[-1].split(".")[0]
         sid = seq_p.split("/")[-2]
         #out_name = f"{sid}_{seq_name}_{1}"
-        batch = self.viewer.load_data(
-            seq_p,
-            True, #args.mano,
-            True, #args.object,
-            False, #args.smplx,
-            True, #args.no_image,
-            True, #args.distort,
-            1, #args.view_idx,
-            self.subject_meta,
-        )
-        mod_batch_0 = {'right': batch[0]['right'].vertices, \
-                       'left': batch[0]['left'].vertices, \
-                       'object': batch[0]['object'].vertices}
 
+        cache_name = ('./cache/processed_batch/' + seq_p.split('/')[-1]).replace('.npy', '.pt')
+        if op.exists(cache_name):
+            return torch.load(cache_name) 
+        else:
+            batch = self.viewer.load_data(
+                seq_p,
+                True, #args.mano,
+                True, #args.object,
+                False, #args.smplx,
+                True, #args.no_image,
+                True, #args.distort,
+                1, #args.view_idx,
+                self.subject_meta,
+            )
+            mod_batch_0 = {'right': batch[0]['right'].vertices, \
+                           'left': batch[0]['left'].vertices, \
+                           'object': batch[0]['object'].vertices}
+            torch.save((mod_batch_0, batch[1]), cache_name)
         return mod_batch_0, batch[1] 
 
 
