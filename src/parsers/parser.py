@@ -11,7 +11,7 @@ def construct_args(img_res=224, fast_dev_run=True):
     parser.add_argument(
         "--method",
         type=str,
-        default="arctic_sf",
+        default="arctic_lstm",
         choices=[None, "arctic_sf", "arctic_lstm", "field_sf", "field_lstm"],
     )
     parser.add_argument("--exp_key", type=str, default=None)
