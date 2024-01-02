@@ -20,7 +20,8 @@ def construct_args(img_res=224, fast_dev_run=True):
     parser.add_argument("--window_size", type=int, default=None)
     parser.add_argument("--eval", action="store_true")
     parser = add_generic_args(parser)
-    args = EasyDict(vars(parser.parse_args()))
+    args, unknown = parser.parse_known_args()
+    args = EasyDict(vars(args))
 
     if args.method in ["arctic_sf"]:
         import src.parsers.configs.arctic_sf as config
