@@ -124,8 +124,8 @@ class ARCTICViewer:
         meshes_all, data = batch
         assert isinstance(meshes_all, dict)
         assert len(meshes_all) > 0
-        for mesh in meshes_all.values():
-            assert isinstance(mesh, Meshes)
+        #for mesh in meshes_all.values():
+        #    assert isinstance(mesh, Meshes)
         assert isinstance(data, ViewerData)
 
     def render_seq(self, batch, out_folder="./render_out"):

@@ -81,6 +81,7 @@ def construct_meshes(
     use_distort,
     view_idx,
     subject_meta,
+    build_mesh=False
 ):
     # load
     data = np.load(seq_p, allow_pickle=True).item()
@@ -122,9 +123,11 @@ def construct_meshes(
         obj = construct_object_meshes(cam_data, obj_name, layers, view_idx, use_distort)
         vis_dict["object"] = obj
 
-    meshes = viewer_utils.construct_viewer_meshes(
-        vis_dict, draw_edges=False, flat_shading=False
-    )
+    meshes = {}
+    if build_mesh:
+        meshes = viewer_utils.construct_viewer_meshes(
+            vis_dict, draw_edges=False, flat_shading=False
+        )
 
     num_frames = len(imgnames)
     Rt = np.zeros((num_frames, 3, 4))
@@ -136,5 +139,5 @@ def construct_meshes(
     if no_image:
         imgnames = None
 
-    data = ViewerData(Rt, K, cols, rows, imgnames)
-    return meshes, data
+    viewer_data = ViewerData(Rt, K, cols, rows, imgnames)
+    return {**meshes, **data}, viewer_data

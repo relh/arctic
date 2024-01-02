@@ -54,7 +54,7 @@ class SeqArcticDataset(Dataset):
         if op.exists(cache_name):
             return torch.load(cache_name) 
         else:
-            batch = self.viewer.load_data(
+            meshes, data = self.viewer.load_data(
                 seq_p,
                 True, #args.mano,
                 True, #args.object,
@@ -64,11 +64,8 @@ class SeqArcticDataset(Dataset):
                 1, #args.view_idx,
                 self.subject_meta,
             )
-            mod_batch_0 = {'right': batch[0]['right'].vertices, \
-                           'left': batch[0]['left'].vertices, \
-                           'object': batch[0]['object'].vertices}
-            torch.save((mod_batch_0, batch[1]), cache_name)
-        return mod_batch_0, batch[1] 
+            torch.save((meshes, data), cache_name)
+        return meshes, data 
 
 
     def _process_imgnames(self, seq, split):
