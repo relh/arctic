@@ -13,7 +13,7 @@ smplx==0.1.28
 tqdm
 trimesh==3.9.21
 scikit-image
-imgui==1.4.1
+imgui
 aitviewer==1.8.1
 chumpy
 black
@@ -22,6 +22,6 @@ flake8
 pylint
 isort
 easydict
-pygit2==1.7
+pygit2
 ipdb
 opencv-python-headless

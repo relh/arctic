@@ -32,7 +32,7 @@ class SeqArcticDataset(Dataset):
         self.seqs = [x.replace('arctic_data/data/images', 'outputs/processed_verts/seqs') + '.npy' for x in self.seqs]
         self.viewer = DataViewer(interactive=False, size=(2024, 2024))
 
-        with open(f"./data/arctic_data/data/meta/misc.json", "r") as f:
+        with open(f"/home/relh/Code/hand_trajectories/third_party/arctic/data/arctic_data/data/meta/misc.json", "r") as f:
             self.subject_meta = json.load(f)
 
 
@@ -50,7 +50,7 @@ class SeqArcticDataset(Dataset):
         sid = seq_p.split("/")[-2]
         #out_name = f"{sid}_{seq_name}_{1}"
 
-        cache_name = ('./cache/processed_batch/' + seq_p.split('/')[-1]).replace('.npy', '.pt')
+        cache_name = ('/home/relh/Code/hand_trajectories/cache/processed_batch/' + seq_p.split('/')[-1]).replace('.npy', '.pt')
         if op.exists(cache_name):
             return torch.load(cache_name) 
         else:
